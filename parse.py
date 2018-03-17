@@ -45,7 +45,7 @@ class Parser:
         self.lexer.match_type(TokenType.StartOfBlock)
 
         body_statements = []
-        while self.lexer.token.type != TokenType.EndOfBlock():
+        while self.lexer.waiting_for_type(TokenType.EndOfBlock):
             body_statements.append(self.statement())
         self.lexer.next()  # Pass through EndOfBlock
 
@@ -68,7 +68,7 @@ class Parser:
         self.lexer.match_type(TokenType.StartOfBlock)
         self.lexer.match_type(TokenType.EndOfLine)
 
-        while self.lexer.token.type != TokenType.EndOfBlock():
+        while self.lexer.waiting_for_type(TokenType.EndOfBlock):
             node.if_body_statements.append(self.statement())
         self.lexer.next()  # Pass through EndOfBlock
 
@@ -77,7 +77,7 @@ class Parser:
             self.lexer.match_type(TokenType.EndOfLine)
             self.lexer.match_type(TokenType.StartOfBlock)
 
-            while self.lexer.token.type != TokenType.EndOfBlock:
+            while self.lexer.waiting_for_type(TokenType.EndOfBlock):
                 node.else_body_statements.append(self.statement())
             self.lexer.next()  # Pass through EndOfBlock
 
@@ -90,7 +90,7 @@ class Parser:
         self.lexer.match_type(TokenType.EndOfLine)
         self.lexer.match_type(TokenType.StartOfBlock)
 
-        while self.lexer.token.type != TokenType.EndOfBlock:
+        while self.lexer.waiting_for_type(TokenType.EndOfBlock):
             statements.append(self.statement())
         self.lexer.next()  # Pass through EndOfBlock
 
