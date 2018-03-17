@@ -112,8 +112,17 @@ class Parser:
         ident = self.lexer.match_type(TokenType.Ident)
 
         if self.lexer.try_match("("):
+
+            arguments = []
+            if not self.lexer.try_match(")"):
+                while True:
+                    arguments.append(self.expr())
+
+                    if not self.lexer.try_match(","):
+                        break
+
             self.lexer.match(")")
-            return AstFnCall(ident)
+            return AstFnCall(ident, arguments)
 
         else:
             return AstIdent(ident)
