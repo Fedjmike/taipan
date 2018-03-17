@@ -55,14 +55,12 @@ class Parser:
         return AstFnDef(name, arguments, body_statements)
 
     def let(self):
-        node = AstLet()
-
         self.lexer.match("let")
-        node.name = self.lexer.match_type(TokenType.Ident)
+        name = self.lexer.match_type(TokenType.Ident)
         self.lexer.match("=")
-        node.value = self.expr()
+        value = self.expr()
 
-        return node
+        return AstLet(name, value)
 
     def if_statement(self):
         node = AstIf()
