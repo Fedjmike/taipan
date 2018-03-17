@@ -100,12 +100,23 @@ class Parser:
         return self.sum()
 
     def sum(self):
-        left = self.lexer.match_type(TokenType.Ident)
+        left = self.factor()
 
-        if not self.lexer.try_match("+"):
-            return AstIdent(left)
+        if self.lexer.try_match("+"):
+            return AstSum(left, self.expr())
+
         else:
-            return AstSum(left, self.sum())
+            return left
+
+    def factor(self):
+        ident = self.lexer.match_type(TokenType.Ident)
+
+        if self.lexer.try_match("("):
+            self.lexer.match(")")
+            return AstFnCall(ident)
+
+        else:
+            return AstIdent(ident)
 
 
 class Ast:
@@ -128,6 +139,12 @@ class AstFnDef(Ast):
         self.name = name
         self.arguments = arguments
         self.body_statements = body_statements
+
+
+class AstFnCall(Ast):
+    def __init__(self, name, arguments):
+        self.name = name
+        self.arguments = arguments
 
 
 class AstLet(Ast):
