@@ -29,15 +29,14 @@ class Parser:
         return node
 
     def def_statement(self):
-        node = AstDef()
-
         self.lexer.match("def")
-        node.name = self.lexer.match_type(TokenType.Ident)
+        name = self.lexer.match_type(TokenType.Ident)
         self.lexer.match("(")
 
+        arguments = []
         if not self.lexer.try_match(")"):
             while True:
-                node.arguments.append(self.lexer.match_type(TokenType.Ident))
+                arguments.append(self.lexer.match_type(TokenType.Ident))
 
                 if not self.lexer.try_match(","):
                     break
@@ -48,9 +47,12 @@ class Parser:
         self.lexer.match_type(TokenType.EndOfLine)
         self.lexer.match_type(TokenType.StartOfBlock)
 
+        body_statements = []
         while self.lexer.token.type != TokenType.EndOfBlock():
-            node.body_statements.append(self.statement())
+            body_statements.append(self.statement())
         self.lexer.next()  # Pass through EndOfBlock
+
+        return AstFnDef(name, arguments, body_statements)
 
     def let(self):
         node = AstLet()
@@ -126,7 +128,7 @@ class AstSum(Ast):
         self.right = right
 
 
-class AstDef(Ast):
+class AstFnDef(Ast):
     def __init__(self, name, arguments, body_statements):
         self.name = name
         self.arguments = arguments
