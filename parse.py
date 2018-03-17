@@ -66,16 +66,15 @@ class Parser:
         return ast.Let(name, value)
 
     def if_statement(self):
-        node = ast.If()
-
         self.lexer.match("if")
-        node.condition = self.expr()
+        condition = self.expr()
         self.lexer.match(":")
         self.lexer.match_type(TokenType.StartOfBlock)
         self.lexer.match_type(TokenType.EndOfLine)
 
+        if_body_statements = []
         while self.lexer.waiting_for_type(TokenType.EndOfBlock):
-            node.if_body_statements.append(self.statement())
+            if_body_statements.append(self.statement())
         self.lexer.next()  # Pass through EndOfBlock
 
         if self.lexer.try_match("else"):
@@ -83,11 +82,12 @@ class Parser:
             self.lexer.match_type(TokenType.EndOfLine)
             self.lexer.match_type(TokenType.StartOfBlock)
 
+            else_body_statements = []
             while self.lexer.waiting_for_type(TokenType.EndOfBlock):
-                node.else_body_statements.append(self.statement())
+                else_body_statements.append(self.statement())
             self.lexer.next()  # Pass through EndOfBlock
 
-        return node
+        return ast.If(condition, if_body_statements, else_body_statements)
 
     def while_loop(self):
         self.lexer.match("while")
