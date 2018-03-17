@@ -9,6 +9,11 @@ class Parser:
         if self.lexer.see("def"):
             return self.def_statement()
 
+        elif self.lexer.try_match("return"):
+            node = AstReturn(self.expr())
+            self.lexer.match_type(TokenType.EndOfLine)
+            return node
+
         elif self.lexer.see("if"):
             return self.if_statement()
 
@@ -148,6 +153,11 @@ class AstFnDef(Ast):
         self.name = name
         self.arguments = arguments
         self.body_statements = body_statements
+
+
+class AstReturn(Ast):
+    def __init__(self, expr):
+        self.expr = expr
 
 
 class AstFnCall(Ast):
