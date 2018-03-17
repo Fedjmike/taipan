@@ -5,6 +5,10 @@ import ast
 class Parser:
     def __init__(self, lexer):
         self.lexer = lexer
+        
+    def parse(self):
+        while not self.lexer.see_type(TokenType.EndOfFile):
+            self.statement()
 
     def statement(self):
         if self.lexer.see("def"):
