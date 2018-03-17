@@ -6,27 +6,24 @@ class Parser:
         self.lexer = lexer
 
     def statement(self):
-        node = AstStatement()
-
         if self.lexer.see("def"):
-            node.statement = self.def_statemnt()
+            return self.def_statement()
 
         elif self.lexer.see("if"):
-            node.statement = self.if_statement()
+            return self.if_statement()
 
         elif self.lexer.see("while"):
-            node.statement = self.while_loop()
+            return self.while_loop()
+
+        elif self.lexer.see("let"):
+            node = self.let()
+            self.lexer.match_type(TokenType.EndOfLine)
+            return node
 
         else:
-            if self.lexer.see("let"):
-                node.statement = self.let()
-
-            else:
-                node.statement = self.expr()
-
+            node = self.expr()
             self.lexer.match_type(TokenType.EndOfLine)
-
-        return node
+            return node
 
     def def_statement(self):
         self.lexer.match("def")
@@ -150,8 +147,3 @@ class AstWhile(Ast):
     def __init__(self, condition, statements):
         self.condition = condition
         self.statements = statements
-
-
-class AstStatement(Ast):
-    def __init__(self, statement):
-        self.statement = statement
