@@ -102,7 +102,7 @@ class Parser:
     def sum(self):
         left = self.lexer.match_type(TokenType.Ident)
 
-        if not self.lexer.try_match("="):
+        if not self.lexer.try_match("+"):
             return AstIdent(left)
         else:
             return AstSum(left, self.sum())
