@@ -90,7 +90,7 @@ class Parser:
         self.lexer.match_type(TokenType.EndOfLine)
         self.lexer.match_type(TokenType.StartOfBlock)
 
-        while not self.lexer.token.type != TokenType.EndOfBlock:
+        while self.lexer.token.type != TokenType.EndOfBlock:
             statements.append(self.statement())
         self.lexer.next()  # Pass through EndOfBlock
 
